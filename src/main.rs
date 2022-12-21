@@ -38,7 +38,7 @@ fn main() {
 }
 
 fn validate_file_path(spec: &String) -> Result<(), ValidationError> {
-    match std::path::Path::new(Path::new(spec)).is_file() {
+    match Path::new(spec).is_file() {
         true => Ok(()),
         false => Err(ValidationError::new("is not file path")),
     }
