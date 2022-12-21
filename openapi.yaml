@@ -1,0 +1,103 @@
+openapi: 3.0.2
+info:
+  title: todo
+  version: 0.0.1
+servers:
+- url: http://localhost:3000
+security:
+- TodoAuth: []
+paths:
+  /todo:
+    get:
+      description: todo list
+      operationId: getTodo
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TodoResponse'
+          description: 200 response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error response
+      tags:
+      - todos
+    post:
+      description: todo create
+      operationId: postTodo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostTodoRequest'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+          description: 201 response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+          description: Error response
+      tags:
+      - todos
+components:
+  schemas:
+    PostTodoRequest:
+      example:
+        todo: "MTG 11:00-"
+      properties:
+        todo:
+          type: string
+      required:
+      - todo
+    PostTodoResponse:
+      properties:
+        lastInsertId:
+          type: integer
+      required:
+      - lastInsertId
+    TodoResponse:
+      properties:
+        todoList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Todo'
+      required:
+      - todoList
+    Todo:
+      example:
+        id: 1
+        todo: "MTG 11:00-"
+      properties:
+        id:
+          type: integer
+        todo:
+          type: string
+      required:
+      - id
+      - todo
+    ApiError:
+      required:
+        - status
+        - title
+      properties:
+        status:
+          type: integer
+          description: HTTP Status Code
+          example: 401
+        title:
+          type: string
+      type: object
+  securitySchemes:
+    TodoAuth:
+      scheme: bearer
+      type: http
