@@ -34,7 +34,7 @@ fn main() {
         }
     };
 
-    generate(args);
+    generate(args.spec, args.output);
 }
 
 fn validate_file_path(spec: &String) -> Result<(), ValidationError> {
@@ -51,11 +51,11 @@ fn load_yaml(path: &str) -> Vec<Yaml> {
     docs
 }
 
-fn generate(args: Args) {
+fn generate(spec: String, output: String) {
     let mut scope = Scope::new();
     let mut line: String = "".to_owned();
 
-    let docs = load_yaml(&args.spec.as_str());
+    let docs = load_yaml(&spec.as_str());
     let doc = docs.first().unwrap();
 
     for path in doc["paths"].as_hash().unwrap() {
@@ -98,7 +98,7 @@ fn generate(args: Args) {
         .ret("axum::Router")
         .line(format!("axum::Router::new(){}", line));
 
-    let mut file = File::create(args.output).unwrap();
+    let mut file = File::create(output).unwrap();
     match write!(file, "{}", scope.to_string()) {
         Ok(_) => match file.flush() {
             Ok(_) => (),
